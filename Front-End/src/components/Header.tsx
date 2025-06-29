@@ -1,5 +1,5 @@
 
-import { Search, User, Menu, Settings, LogOut } from 'lucide-react';
+import { Search, User, Menu, Settings, LogOut, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
@@ -65,6 +65,15 @@ const Header = () => {
               </div>
 
               <CartBadge />
+
+              {/* Chat Icon - Only for Admin and Seller */}
+              {user && (user.role === 'admin' || user.role === 'seller') && (
+                <Link to="/community-chat">
+                  <Button variant="ghost" size="icon" className="text-gray-700 hover:text-purple-600">
+                    <MessageSquare className="w-5 h-5" />
+                  </Button>
+                </Link>
+              )}
 
               <LanguageSwitcher variant="header" />
 
