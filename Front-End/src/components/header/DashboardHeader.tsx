@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Bell, Moon, LogOut, User, Settings, Home } from 'lucide-react';
+import { Bell, Moon, LogOut, User, Settings, Home, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -149,6 +149,15 @@ export const DashboardHeader: React.FC = () => {
             </DropdownMenuContent>
           </DropdownMenu>
 
+          {/* Chat Icon - Only for Admin and Seller */}
+          {user && (user.role === 'admin' || user.role === 'seller') && (
+            <Link to="/community-chat">
+              <Button variant="ghost" size="icon" className="text-gray-700 hover:text-purple-600">
+                <MessageSquare className="w-5 h-5" />
+              </Button>
+            </Link>
+          )}
+
           <LanguageSwitcher variant="dashboard" />
 
           <DropdownMenu>
@@ -181,5 +190,5 @@ export const DashboardHeader: React.FC = () => {
         </div>
       </div>
     </header>
-  );
+  );
 };
