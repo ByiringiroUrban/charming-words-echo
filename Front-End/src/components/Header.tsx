@@ -17,6 +17,14 @@ const Header = () => {
     logout();
   };
 
+  const handleChatClick = () => {
+    // If user is not logged in or not admin/seller, redirect to login
+    if (!user || (user.role !== 'admin' && user.role !== 'seller')) {
+      window.location.href = '/login';
+      return;
+    }
+  };
+
   return (
     <>
       <TopBanner />
@@ -66,14 +74,15 @@ const Header = () => {
 
               <CartBadge />
 
-              {/* Chat Icon - Only for Admin and Seller */}
-              {user && (user.role === 'admin' || user.role === 'seller') && (
-                <Link to="/community-chat">
-                  <Button variant="ghost" size="icon" className="text-gray-700 hover:text-purple-600">
-                    <MessageSquare className="w-5 h-5" />
-                  </Button>
-                </Link>
-              )}
+              {/* Chat Icon - Visible to all users */}
+              <Link 
+                to={user && (user.role === 'admin' || user.role === 'seller') ? "/community-chat" : "/login"}
+                onClick={handleChatClick}
+              >
+                <Button variant="ghost" size="icon" className="text-gray-700 hover:text-purple-600">
+                  <MessageSquare className="w-5 h-5" />
+                </Button>
+              </Link>
 
               <LanguageSwitcher variant="header" />
 
