@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -26,9 +25,14 @@ const Products = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
-  // Get category filter from URL parameters
+  // Get search and category filters from URL parameters
   useEffect(() => {
+    const searchParam = searchParams.get('search');
     const categoryParam = searchParams.get('category');
+    
+    if (searchParam) {
+      setSearchTerm(searchParam);
+    }
     if (categoryParam) {
       setSelectedCategory(categoryParam);
     }
@@ -76,18 +80,31 @@ const Products = () => {
   const paginatedProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
 
   const handleCategoryChange = (categoryId: string) => {
+    const newParams = new URLSearchParams(searchParams);
+    
     if (categoryId === 'all') {
       setSelectedCategory('');
-      setSearchParams({});
+      newParams.delete('category');
     } else {
       setSelectedCategory(categoryId);
-      setSearchParams({ category: categoryId });
+      newParams.set('category', categoryId);
     }
+    
+    setSearchParams(newParams);
     setCurrentPage(1); // Reset to first page when filters change
   };
 
   const handleSearchChange = (value: string) => {
+    const newParams = new URLSearchParams(searchParams);
+    
     setSearchTerm(value);
+    if (value.trim()) {
+      newParams.set('search', value.trim());
+    } else {
+      newParams.delete('search');
+    }
+    
+    setSearchParams(newParams);
     setCurrentPage(1); // Reset to first page when search changes
   };
 
@@ -202,7 +219,7 @@ const Products = () => {
               <Badge variant="secondary" className="px-3 py-1">
                 Category: {categories.find(c => c.id.toString() === selectedCategory)?.name}
                 <button
-                  onClick={() => handleCategoryChange('')}
+                  onClick={() => handleCategoryChange('all')}
                   className="ml-2 text-gray-500 hover:text-gray-700"
                 >
                   ×

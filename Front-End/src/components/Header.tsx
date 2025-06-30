@@ -1,8 +1,7 @@
-
 import { Search, User, Menu, Settings, LogOut, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
-import { useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useContext, useState } from 'react';
 import { AuthContext } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import TopBanner from './TopBanner';
@@ -13,6 +12,9 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 const Header = () => {
   const { user, logout } = useContext(AuthContext);
   const { t } = useLanguage();
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+
   const handleLogout = () => {
     logout();
   };
@@ -25,6 +27,18 @@ const Header = () => {
       return;
     }
     // If user is admin or seller, let the Link component handle the navigation
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // Navigate to products page with search query
+      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
   };
 
   return (
@@ -65,14 +79,17 @@ const Header = () => {
 
             {/* Search and Actions */}
             <div className="flex items-center space-x-4">
-              <div className="hidden md:flex items-center bg-gray-100 rounded-full px-4 py-3">
+              <form onSubmit={handleSearchSubmit} className="hidden md:flex items-center bg-gray-100 rounded-full px-4 py-3">
                 <Search className="w-4 h-4 text-gray-400 mr-2" />
                 <input 
                   type="text" 
                   placeholder={t('products.search_placeholder')}
-                  className="bg-transparent border-none outline-none text-sm"
+                  value={searchQuery}
+                  onChange={handleSearchInputChange}
+                  className="bg-transparent border-none outline-none text-sm w-64"
                 />
-              </div>
+                <button type="submit" className="sr-only">Search</button>
+              </form>
 
               <CartBadge />
 
