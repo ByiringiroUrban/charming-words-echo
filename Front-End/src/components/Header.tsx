@@ -17,12 +17,14 @@ const Header = () => {
     logout();
   };
 
-  const handleChatClick = () => {
-    // If user is not logged in or not admin/seller, redirect to login
+  const handleChatClick = (e: React.MouseEvent) => {
+    // If user is not logged in or not admin/seller, prevent default and redirect to login
     if (!user || (user.role !== 'admin' && user.role !== 'seller')) {
+      e.preventDefault();
       window.location.href = '/login';
       return;
     }
+    // If user is admin or seller, let the Link component handle the navigation
   };
 
   return (
@@ -76,7 +78,7 @@ const Header = () => {
 
               {/* Chat Icon - Visible to all users */}
               <Link 
-                to={user && (user.role === 'admin' || user.role === 'seller') ? "/community-chat" : "/login"}
+                to="/community-chat"
                 onClick={handleChatClick}
               >
                 <Button variant="ghost" size="icon" className="text-gray-700 hover:text-purple-600">
